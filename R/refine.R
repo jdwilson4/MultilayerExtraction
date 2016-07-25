@@ -51,6 +51,7 @@ refine = function(Multilayer.object, k, m, n){
   return(list(Layers = Score, Vertices = Vertices))
 }
 
+###cleanup function
 cleanup = function(Results, beta){
   k = length(Results)
   if(k < 2){return(Results)}
