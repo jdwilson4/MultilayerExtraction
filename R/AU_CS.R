@@ -1,4 +1,4 @@
-#' data set: AU_CS
+#' dataset: AU_CS
 #'
 #' Data set that contains the multilayer network describing the multilayer relationships among attendees to an Austrailian computer science conference. 
 #' In total, there were 61 attendees (represented by the nodes in each layer), and 5 relationships that are represented by the layers in the network. The 
