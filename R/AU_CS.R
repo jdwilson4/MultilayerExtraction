@@ -6,7 +6,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(AU_CS)
+#' @usage data("AU_CS")
 #'
 #' @format This data set contains a list of adjacency matrices where each entry represents a different social relationship.
 #'
