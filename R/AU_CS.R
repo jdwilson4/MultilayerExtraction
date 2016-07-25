@@ -23,4 +23,5 @@
 #' @examples
 #' data(AU_CS)
 #' image(Matrix(adjacency$facebook)) #visualize the adjacency matrix that represents the Facebook friendships of the conference attendees.
-#' @export
+
+"AU_CS"
