@@ -376,8 +376,8 @@ vertex.change = function(adj.sum, layer.set, vertex.set, exp.sum, score.old){
   
   #update expected value and observed
   
-  observed.u <- 2*rowSums(adj.sum[, vertex.set]) #observed number of edges from each vertex to B
-  expected.u <- 2*rowSums(exp.sum[, vertex.set]) #expected number of edges from each vertex to B
+  observed.u <- 2*rowSums(matrix(adj.sum[, vertex.set])) #observed number of edges from each vertex to B
+  expected.u <- 2*rowSums(matrix(exp.sum[, vertex.set])) #expected number of edges from each vertex to B
   
   mu.hat <- sum(exp.B) + expected.u #addition of u
   d.tot <- sum(obs.B) + observed.u #addition of u
