@@ -102,17 +102,17 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
 #######################################################################
 ##Swapping functions##
 ####Function for determining which vertex/layer should be swapped
-swap.candidate = function(set, changes, add, remove, score){
+swap.candidate = function(set, changes, add, remove, score.old){
   #If there are only some to be added
   if(length(remove) == 0 & length(add) > 0){
     if(is.na(add) == FALSE){
       if(changes[add] > 0){
         set.new <- union(set, add)
-        score <- score + changes[add]
+        score.old <- score.old + changes[add]
       }
       if(changes[add] < 0){
         set.new <- set
-        return(list(set.new = set.new, score = score))
+        return(list(set.new = set.new, score.old = score.old))
       }
     }
   }
@@ -122,12 +122,12 @@ swap.candidate = function(set, changes, add, remove, score){
     if(is.na(remove) == FALSE){
       if(changes[remove] > 0){
         set.new <- setdiff(set,remove)
-        score <- score + changes[remove]
-        return(list(set.new = set.new, score = score))
+        score.old <- score.old + changes[remove]
+        return(list(set.new = set.new, score.old = score.old))
       }
       if(changes[remove] < 0){
         set.new <- set
-        return(list(set.new = set.new, score = score))
+        return(list(set.new = set.new, score.old = score.old))
       }
     }
   }
@@ -136,23 +136,23 @@ swap.candidate = function(set, changes, add, remove, score){
   if(length(add) > 0 & length(remove) > 0){
     if(changes[remove] < 0 & changes[add] < 0){
       set.new <- set
-      return(list(set.new = set.new, score = score))
+      return(list(set.new = set.new, score.old = score.old))
     }
     if(changes[remove] > changes[add] & changes[remove] > 0){
       set.new <- setdiff(set,remove)
-      score <- score + changes[remove]
-      return(list(set.new = set.new, score = score))
+      score.old <- score.old + changes[remove]
+      return(list(set.new = set.new, score.old = score.old))
     }
     if(changes[remove] < changes[add] & changes[add] > 0){
       set.new <- union(set,add)
-      score <- score + changes[add]
-      return(list(set.new = set.new, score = score))
+      score.old <- score.old + changes[add]
+      return(list(set.new = set.new, score.old = score.old))
     }
   }
   
   #if there are none to be added nor removed
   if(length(add) == 0 & length(remove) == 0){
-    return(list(set.new = set, score = score))
+    return(list(set.new = set, score.old = score.old))
   }
 }
 
@@ -201,7 +201,6 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
   
   return(list(layer.set.new = layer.set.new, score = score.old)) 
 }
-#######################################################################
 
 #######################################################################
 ######Choosing which vertex to swap one at a time######
@@ -246,8 +245,8 @@ swap.vertex = function(adjacency, expected, layer.set, vertex.set, score.old){
   u.sub <- vertex.set[inside.candidate]
   
   #Make the swap
-  results <- swap.candidate(vertex.set, changes, u.add, u.sub, score)
-  return(list(B.new = results$set.new, score = results$score)) 
+  results <- swap.candidate(vertex.set, changes, u.add, u.sub, score.old)
+  return(list(B.new = results$set.new, score.old = results$score.old)) 
 }
 #######################################################################
 #Inner function for a single swap inside the function for Multilayer.Extraction
