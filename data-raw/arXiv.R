@@ -2,7 +2,7 @@ library(dplyr)
 library(lubridate)
 library(tidyr)
 
-load("arXiv.rda")
+load("data-raw/arXiv.rda")
 
 arXiv <- Adjacency
 names(arXiv) <- layer.labels

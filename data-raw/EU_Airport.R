@@ -2,7 +2,7 @@ library(dplyr)
 library(lubridate)
 library(tidyr)
 
-load("EU_Airport.rda")
+load("data-raw/EU_Airport.rda")
 
 EU_Airport <- Adjacency
 names(EU_Airport) <- layer.labels
