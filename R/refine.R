@@ -29,9 +29,9 @@ refine = function(Multilayer.object, k, m, n){
   beta = Multilayer.object$Diagnostics$Beta[indx]
   Results = list()
   #score = numeric()
-  m = length(Multilayer.object$Community.List)
+  h = length(Multilayer.object$Community.List)
   r = 0
-  for(i in 1:m){
+  for(i in 1:h){
     g = length(Multilayer.object$Community.List[[i]]$Communities)
     for(j in 1:g){
       r = r + 1
@@ -42,7 +42,7 @@ refine = function(Multilayer.object, k, m, n){
   refined.group = cleanup(Results, beta)
   
   ##Now create a binary matrices for the results
-  Score <- Matrix(0,m, k)
+  Score <- Matrix(0, m, k)
   Vertices <- Matrix(0, n, k)
   for(i in 1:k){
     Score[refined.group$Communities[[i]]$I, i] = refined.group$Communities[[i]]$Score
