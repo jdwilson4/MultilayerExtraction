@@ -32,6 +32,9 @@ score = function(adjacency, expected, vertex.set, layer.set){
   if(class(expected) != "list"){
     expected <- list(expected)
   }
+  if(length(layer.set) < 1 || length(vertex.set) < 1){
+    return(obs.score = 0)
+  }
   
   if(length(layer.set) == 1){
     adj.sum <- adjacency[[layer.set]]
@@ -53,7 +56,7 @@ score = function(adjacency, expected, vertex.set, layer.set){
   
   #calculate the score of the community
   tot.mod <- sum(modularity.score)
-  score <- 2*(tot.mod)^2 / (choose(length(vertex.set), 2)*(length(layer.set)))
+  obs.score <- 2*(tot.mod)^2 / (choose(length(vertex.set), 2)*(length(layer.set)))
   
-  return(score)
+  return(obs.score)
 }
