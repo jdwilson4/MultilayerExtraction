@@ -24,7 +24,7 @@ expected.CM <- function(adjacency){
   m <- length(adjacency) #number of layers
   P <- list()
   for(i in 1:m){
-    degrees <- matrix(rowSums(matrix(adjacency[[i]])), ncol = 1)
+    degrees <- matrix(rowSums(as.matrix(adjacency[[i]])), ncol = 1)
     d.tot <- sum(degrees)
     expected <- degrees%*%t(degrees) / d.tot #expected under configuration model
     P[[i]] <- expected

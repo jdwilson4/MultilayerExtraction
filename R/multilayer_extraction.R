@@ -205,7 +205,7 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
 
 #######################################################################
 ######Choosing which vertex to swap one at a time######
-swap.vertex = function(adjacency, expected, layer.set, vertex.set, score){
+swap.vertex = function(adjacency, expected, layer.set, vertex.set, score.old){
   
   if(class(adjacency) != "list"){
     adjacency <- list(adjacency)
@@ -216,16 +216,6 @@ swap.vertex = function(adjacency, expected, layer.set, vertex.set, score){
   
   m <- length(adjacency)
   n <- dim(adjacency[[1]])[1]
-  
-  if(length(layer.set) > 1){
-    adj.sum <- Reduce('+', adjacency[layer.set])
-    exp.sum <- Reduce('+', expected[layer.set])
-  }
-  
-  if(length(layer.set) == 1){
-    adj.sum <- adjacency[[layer.set]]
-    exp.sum <- expected[[layer.set]]
-  }
   
   if(length(layer.set) == 0){
     print('No Community Found')
@@ -242,10 +232,11 @@ swap.vertex = function(adjacency, expected, layer.set, vertex.set, score){
     print('No Community Found')
     return(NULL)
   }
-  changes = vertex.change(adj.sum, layer.set, vertex.set, exp.sum, score)
-  changes[which(is.null(changes) == TRUE)] <- 0
+  changes = vertex.change(adjacency, expected, layer.set, vertex.set, score.old)
   
-  changes[which(is.na(changes) == TRUE)] <- 0
+  #changes[which(is.null(changes) == TRUE)] <- 0
+  
+  #changes[which(is.na(changes) == TRUE)] <- 0
   
   #Get candidates
   outside.candidate <- which.max(changes[setdiff(1:n, vertex.set)])[1] 
@@ -367,30 +358,24 @@ layer.change = function(adj.sum, adjacency, layer.set, vertex.set, exp.sum, expe
 }
 
 ######Effect on score when adding or subtracting a vertex#######
-vertex.change = function(adj.sum, layer.set, vertex.set, exp.sum, score.old){
+vertex.change = function(adjacency, expectation, layer.set, vertex.set, score.old){
   
+  n <- dim(adj.sum)[1]
+  indx <- setdiff(1:n, vertex.set)
+  score.changes <- rep(0, n)
+  #the following can also be parallelized!
+  for(i in 1:n){
+    if(i %in% set){
+      score.changes[i] <- score(adjacency, expectation, vertex.set = 
+                                  setdiff(vertex.set, i),
+                                layer.set = layer.set) - score.old
+    }
+    if(i %in% set == FALSE){
+      score.changes[i] <- score(adjacency, expectation, vertex.set = 
+                                  union(vertex.set, i),
+                                layer.set = layer.set) - score.old
+    }
+  }
   
-  obs.B <- matrix(adj.sum[vertex.set, vertex.set], ncol = 1)
-  
-  exp.B <- matrix(exp.sum[vertex.set, vertex.set], ncol = 1)
-  
-  #update expected value and observed
-  
-  observed.u <- 2*rowSums(matrix(adj.sum[, vertex.set])) #observed number of edges from each vertex to B
-  expected.u <- 2*rowSums(matrix(exp.sum[, vertex.set])) #expected number of edges from each vertex to B
-  
-  mu.hat <- sum(exp.B) + expected.u #addition of u
-  d.tot <- sum(obs.B) + observed.u #addition of u
-  
-  mu.hat[vertex.set] <- sum(exp.B) - expected.u[vertex.set] #removal of u
-  d.tot[vertex.set] <- sum(d.tot) - observed.u[vertex.set] #removal of u
-  
-  
-  score.new = 2*(d.tot - mu.hat)^2 / (choose(length(vertex.set) + 1, 2)*length(layer.set)) #new score f added
-  
-  score.new[vertex.set] = 2*(d.tot[vertex.set] - mu.hat[vertex.set])^2 / (choose(length(vertex.set) - 1, 2)*length(layer.set)) #If removed
-  
-  scores.change = score.new - score.old
-  
-  return(scores.change)
+  return(score.changes)
 }
