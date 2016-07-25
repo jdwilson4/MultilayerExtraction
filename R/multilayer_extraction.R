@@ -170,21 +170,13 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
   m <- length(adjacency)
   n <- dim(adjacency[[1]])[1]
   
-  if(length(layer.set) > 1){
-    adj.sum <- Reduce('+', adjacency[layer.set])
-    exp.sum <- Reduce('+', expected[layer.set])
-  }
-  if(length(layer.set) == 1){
-    adj.sum <- adjacency[[layer.set]]
-    exp.sum <- expected[[layer.set]]
-  }
   
   if(length(layer.set) == 0){
     print('No Community Found')
     return(NULL)
   }
   
-  changes <- layer.change(adj.sum, adjacency, layer.set, vertex.set, exp.sum, expected, score.old)
+  changes <- layer.change(adjacency, expectation, layer.set, vertex.set, score.old)
   changes[which(is.null(changes) == TRUE)] <- 0
   changes[which(is.na(changes) == TRUE)] <- 0
   
@@ -197,7 +189,7 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
   #Make the swap
   results <- swap.candidate(layer.set, changes, l.add, l.sub, score.old)
   layer.set.new <- results$set.new
-  score.old <- results$score
+  score.old <- results$score.old
   
   return(list(layer.set.new = layer.set.new, score = score.old)) 
 }
