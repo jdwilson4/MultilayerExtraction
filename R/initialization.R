@@ -45,9 +45,9 @@ initialization = function(adjacency, prop.sample){
   thresh = function(x, m){
     #random choice of layer set
     layer.set = sample(1:m, ceiling(m/2))
-    mean.connection <- mean(x) #mean connection of the given vertex
+    median.connection <- median(x) #mean connection of the given vertex
     #vertex set is for those with higher than median connection
-    vertex.set <- which(x > mean.connection)
+    vertex.set <- which(x > median.connection)
     return(list(vertex.set = vertex.set, layer.set = layer.set))
   }
   
