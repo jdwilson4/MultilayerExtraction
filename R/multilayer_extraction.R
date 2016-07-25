@@ -303,7 +303,7 @@ single.swap = function(initial.set, adjacency, expected){
 }
 
 ######Effect on score when adding or subtracting a layer#######
-layer.change = function(adj.sum, adjacency, layer.set, vertex.set, exp.sum, expected, score.old){
+layer.change = function(adjacency, expected, layer.set, vertex.set, score.old){
   
   #first check that adjacency and expected are lists
   if(class(adjacency) != "list"){
