@@ -191,7 +191,7 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
   layer.set.new <- results$set.new
   score.old <- results$score.old
   
-  return(list(layer.set.new = layer.set.new, score = score.old)) 
+  return(list(layer.set.new = layer.set.new, score.old = score.old)) 
 }
 
 #######################################################################
@@ -280,7 +280,7 @@ single.swap = function(initial.set, adjacency, expected){
         I <- I.new
         results <- swap.layer(adjacency, expected, I, B, score.old)
         I.new <- results$layer.set.new
-        score.old <- results$score
+        score.old <- results$score.old
       }
     }
     if(m == 1){
@@ -296,7 +296,7 @@ single.swap = function(initial.set, adjacency, expected){
       results <- swap.vertex(adjacency, expected, I.new, B, score.old)
       
       B.new <- results$B.new
-      score.old <- results$score
+      score.old <- results$score.old
     }
   }
   return(list(B = sort(B.new), I = sort(I.new), Score = score.old))
@@ -317,53 +317,48 @@ layer.change = function(adj.sum, adjacency, layer.set, vertex.set, exp.sum, expe
   
   m <- length(adjacency)
   n <- dim(adjacency[[1]])[1]
-  
-  
-  obs.B <- matrix(adj.sum[vertex.set, vertex.set], ncol = 1)
-  
-  exp.B <- matrix(exp.sum[vertex.set, vertex.set], ncol = 1)
-  
-  #update expected value and observed based on adding and removing each layer
-  observed.l <- rep(0, m)
-  expected.l <- rep(0, m)
-  
+  indx <- setdiff(1:m, layer.set) #which layers are not in the current set
+  score.changes <- rep(0, m)
   
   for(i in 1:m){
-    observed.l[i] <- sum(adjacency[[i]][vertex.set, vertex.set])
-    expected.l[i] <- sum(expected[[i]][vertex.set, vertex.set])
+    if(i %in% indx){
+      score.changes[i] <- score(adjacency, expectation, vertex.set = 
+                                  vertex.set,
+                                layer.set = union(layer.set, i)) - score.old
+    }
+    if(i %in% indx == FALSE){
+      score.changes[i] <- score(adjacency, expectation, vertex.set = 
+                                  vertex.set,
+                                layer.set = setdiff(layer.set, i)) - score.old
+    }
   }
-  
-  mu.hat <- sum(exp.B) + expected.l #value of mu once we add layer l
-  d.tot <- sum(obs.B) + observed.l #value of observed number of edges once we add layer l
-  
-  mu.hat[layer.set] <- sum(exp.B) - expected.l[layer.set] #change in mu once we remove l
-  d.tot[layer.set] <- sum(obs.B) - observed.l[layer.set] #change in observed number of edges once we remove l
-  
-  
-  score.new <- 2*(d.tot - mu.hat)^2 / (choose(length(vertex.set), 2)*(length(layer.set) + 1)) #score if adding a layer
-  
-  score.new[layer.set] <- 2*(d.tot[layer.set] - mu.hat[layer.set])^2 / (choose(length(vertex.set), 2)
-                                                                        *(length(layer.set) - 1)) #score if subtracting a layer
-  scores.change <- score.new - score.old 
-  return(scores.change)
+  return(score.changes)
 }
 
 ######Effect on score when adding or subtracting a vertex#######
 vertex.change = function(adjacency, expectation, layer.set, vertex.set, score.old){
+ 
+   #first check that adjacency and expected are lists
+  if(class(adjacency) != "list"){
+    adjacency <- list(adjacency)
+  }
   
-  n <- dim(adj.sum)[1]
+  if(class(expected) != "list"){
+    expected <- list(expected)
+  }
+  n <- dim(adjacency[[1]])[1]
   indx <- setdiff(1:n, vertex.set)
   score.changes <- rep(0, n)
   #the following can also be parallelized!
   for(i in 1:n){
-    if(i %in% set){
-      score.changes[i] <- score(adjacency, expectation, vertex.set = 
-                                  setdiff(vertex.set, i),
-                                layer.set = layer.set) - score.old
-    }
-    if(i %in% set == FALSE){
+    if(i %in% indx){
       score.changes[i] <- score(adjacency, expectation, vertex.set = 
                                   union(vertex.set, i),
+                                layer.set = layer.set) - score.old
+    }
+    if(i %in% indx == FALSE){
+      score.changes[i] <- score(adjacency, expectation, vertex.set = 
+                                  setdiff(vertex.set, i),
                                 layer.set = layer.set) - score.old
     }
   }
