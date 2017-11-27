@@ -26,22 +26,23 @@
 #' 
 #' 
 multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.sample = 0.05){
-  #check to see if adjacency is a list object
-  if(class(adjacency) != "list"){
-    adjacency <- list(adjacency)
-  }
-  m <- length(adjacency)
-  n <- dim(adjacency[[1]])[1]
+  #adjacency should be an edgelist with three columns - node1, node2, layer
+  #layer should be numbered with integers
+  #each network has the same number of nodes
+  #nodes are indexed by the integers starting from 1
+  
+  m <- max(adjacency[, 3]) #max of the layer index
+  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
   
   #Estimate the multilayer configuration model
   print(paste("Estimation Stage"))
   
-  expected <- expected.CM(adjacency)
+  expected <- expected.CM(adjacency)  #TODO
   
   #Initialize the communities
   print(paste("Initialization Stage"))
   
-  initial.set = initialization(adjacency, prop.sample)
+  initial.set = initialization(adjacency, prop.sample)  #TODO
   
   #Search Across Initial sets
   print(paste("Search Stage"))
@@ -49,9 +50,10 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   cat(paste("Searching over", length(initial.set), "seed sets \n"))
   Results.temp <- list()
   K <- length(initial.set)
-  #note: we can parallelize this part of the search!
-  registerDoParallel(detectCores())  ###### detectCores will automatically place the number of cores your computer has.
   
+  #detectCores detects the number of cores available on your instance
+  
+  registerDoParallel(detectCores())  
   Results.temp <- foreach(i=1:K,.packages="MultilayerExtraction") %dopar% {
     single.swap(initial.set[[i]], adjacency, expected)} 
   
@@ -155,7 +157,7 @@ swap.candidate = function(set, changes, add, remove, score.old){
   }
 }
 
-
+###James -- HERE!! TODO
 ######Choosing which layer to swap one at a time######
 swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
   
