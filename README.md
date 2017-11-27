@@ -4,7 +4,7 @@ densely connected vertex-layer sets in multilayer networks.
 
 The key reference for this monitoring method is
 
-- Wilson, J.D., Palowitch, J., Bhamidi, S., and Nobel, A.B. (2016) **Significance based extraction in multilayer networks with heterogeneous community structure**
+Wilson, J.D., Palowitch, J., Bhamidi, S., and Nobel, A.B. (2017) **Significance based extraction in multilayer networks with heterogeneous community structure**, *Journal of Machine Learning Research* (18) 1-49
 
 ## Installation
 
@@ -19,6 +19,16 @@ library(devtools, quietly = TRUE)
 devtools::install_github('jdwilson4/multilayer_extraction')
 
 library(MultilayerExtraction, quietly = TRUE)
+
+
+#install all other required libraries
+install.packages("foreach")
+install.packages("doParallel")
+install.packages("parallel")
+
+library(foreach, quietly = TRUE)  
+library(doParallel, quietly = TRUE) 
+library(parallel, quietly = TRUE)  
 ```
 
 ## Description
@@ -109,5 +119,6 @@ As we can see above, the communities are strongly connected relative to the rema
 
 ## Contributors
 - **James D. Wilson**, Assistant Professor of Statistics, University of San Francisco. Developer, contributor, and maintainer. 
+- **Jean Carlos Paredes**, University of San Francisco. Contributor.
 
 Please send any comments, bugs, or questions to the developer James D. Wilson at jdwilson4@usfca.edu. 

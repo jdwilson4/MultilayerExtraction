@@ -50,11 +50,10 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   Results.temp <- list()
   K <- length(initial.set)
   #note: we can parallelize this part of the search!
-  for(i in 1:K){
-    cat(paste("Extraction", i, "\n"))
-    
-    Results.temp[[i]] = single.swap(initial.set[[i]], adjacency, expected)
-  }
+  registerDoParallel(detectCores())  ###### detectCores will automatically place the number of cores your computer has.
+  
+  Results.temp <- foreach(i=1:K,.packages="MultilayerExtraction") %dopar% {
+    single.swap(initial.set[[i]], adjacency, expected)} 
   
   #Cleanup the results: Keep the unique communities
   print(paste("Cleaning Stage"))
@@ -337,19 +336,19 @@ layer.change = function(adjacency, expected, layer.set, vertex.set, score.old){
 
 ######Effect on score when adding or subtracting a vertex#######
 vertex.change = function(adjacency, expected, layer.set, vertex.set, score.old){
- 
-   #first check that adjacency and expected are lists
+  
+  #first check that adjacency and expected are lists
   if(class(adjacency) != "list"){
     adjacency <- list(adjacency)
   }
   
   if(class(expected) != "list"){
-    expected <- list(expected)
   }
   n <- dim(adjacency[[1]])[1]
   indx <- setdiff(1:n, vertex.set)
   score.changes <- rep(0, n)
   #the following can also be parallelized!
+  
   for(i in 1:n){
     if(i %in% indx){
       score.changes[i] <- score(adjacency, expected, vertex.set = 
