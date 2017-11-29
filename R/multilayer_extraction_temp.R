@@ -34,28 +34,41 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   m <- max(adjacency[, 3]) #max of the layer index
   n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
   
-  #Estimate the multilayer configuration model
+  #Calculate the modularity matrix
   print(paste("Estimation Stage"))
   
-  expected <- expected.CM(adjacency)  
+  mod.matrix <- modularity.matrix(adjacency) 
   
-  #Initialize the communities
+  #Initialize the communities #TODO
   print(paste("Initialization Stage"))
   
-  initial.set = initialization(adjacency, prop.sample)  
+  for(i in 1:m){
+    if(i == 1){
+      graph <- graph_from_edgelist(as.matrix(subset(as.data.frame(adjacency), layer == i))[, 1:2], 
+                                   directed = directed)
+      initial.set <- initialization(graph, prop.sample, m, n)
+    }else{
+      graph <- graph_from_edgelist(as.matrix(subset(as.data.frame(adjacency), layer == i))[, 1:2], 
+                                   directed = directed)
+      initial.set <- Map(c, initial.set, initialization(graph, prop.sample, m, n))
+    }
+  }
   
   #Search Across Initial sets
   print(paste("Search Stage"))
   
-  cat(paste("Searching over", length(initial.set), "seed sets \n"))
+  cat(paste("Searching over", length(initial.set[[1]]), "seed sets \n"))
   Results.temp <- list()
-  K <- length(initial.set)
+  K <- length(initial.set[[1]])
   
   #detectCores detects the number of cores available on your instance
   
   registerDoParallel(detectCores())  
   Results.temp <- foreach(i=1:K,.packages="MultilayerExtraction") %dopar% {
-    single.swap(initial.set[[i]], adjacency, expected)} 
+    starter <- list()
+    starter$vertex.set <- as.numeric(initial.set$vertex.set[[i]])
+    starter$layer.set <- as.numeric(initial.set$layer.set[[i]])
+    single.swap(starter, adjacency, mod.matrix, m, n)} 
   
   #Cleanup the results: Keep the unique communities
   print(paste("Cleaning Stage"))
@@ -140,12 +153,12 @@ swap.candidate = function(set, changes, add, remove, score.old){
       return(list(set.new = set.new, score.old = score.old))
     }
     if(changes[remove] > changes[add] & changes[remove] > 0){
-      set.new <- setdiff(set,remove)
+      set.new <- setdiff(set, remove)
       score.old <- score.old + changes[remove]
       return(list(set.new = set.new, score.old = score.old))
     }
     if(changes[remove] < changes[add] & changes[add] > 0){
-      set.new <- union(set,add)
+      set.new <- union(set, add)
       score.old <- score.old + changes[add]
       return(list(set.new = set.new, score.old = score.old))
     }
@@ -158,17 +171,14 @@ swap.candidate = function(set, changes, add, remove, score.old){
 }
 
 ######Choosing which layer to swap one at a time######
-swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
-  
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
-  
+swap.layer = function(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n){
+
   if(length(layer.set) == 0){
     print('No Community Found')
     return(NULL)
   }
   
-  changes <- layer.change(adjacency, expected, layer.set, vertex.set, score.old)
+  changes <- layer.change(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n)
   changes[which(is.null(changes) == TRUE)] <- 0
   changes[which(is.na(changes) == TRUE)] <- 0
   
@@ -188,10 +198,7 @@ swap.layer = function(adjacency, expected, layer.set, vertex.set, score.old){
 
 #######################################################################
 ######Choosing which vertex to swap one at a time######
-swap.vertex = function(adjacency, expected, layer.set, vertex.set, score.old){
-  
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
+swap.vertex = function(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n){
   
   if(length(layer.set) == 0){
     print('No Community Found')
@@ -208,7 +215,7 @@ swap.vertex = function(adjacency, expected, layer.set, vertex.set, score.old){
     print('No Community Found')
     return(NULL)
   }
-  changes = vertex.change(adjacency, expected, layer.set, vertex.set, score.old)
+  changes = vertex.change(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n)
   
   #Get candidates
   outside.candidate <- which.max(changes[setdiff(1:n, vertex.set)])[1] 
@@ -224,15 +231,12 @@ swap.vertex = function(adjacency, expected, layer.set, vertex.set, score.old){
 #######################################################################
 #Inner function for a single swap inside the function for Multilayer.Extraction
 #Note: check the names of initial set
-single.swap = function(initial.set, adjacency, expected){
-  
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
+single.swap = function(initial.set, adjacency, mod.matrix, m, n){
   
   #initialize vertex.set and layer.set
   B.new <- initial.set$vertex.set
   I.new <- initial.set$layer.set
-  score.old <- score(adjacency, expected, vertex.set = B.new, layer.set = I.new)
+  score.old <- score(mod.matrix, vertex.set = B.new, layer.set = I.new, n)
   
   iterations <- 1
   B.fixed <- B.new + 1
@@ -259,7 +263,7 @@ single.swap = function(initial.set, adjacency, expected){
       while(length(intersect(I.new, I)) < max(length(I.new), length(I))){
         
         I <- I.new
-        results <- swap.layer(adjacency, expected, I, B, score.old)
+        results <- swap.layer(adjacency, mod.matrix, I, B, score.old, m, n)
         I.new <- results$layer.set.new
         score.old <- results$score.old
       }
@@ -274,7 +278,7 @@ single.swap = function(initial.set, adjacency, expected){
     
     while(length(intersect(B.new, B)) < max(length(B.new), length(B))){
       B <- B.new
-      results <- swap.vertex(adjacency, expected, I.new, B, score.old)
+      results <- swap.vertex(adjacency, mod.matrix, I.new, B, score.old, m, n)
       
       B.new <- results$B.new
       score.old <- results$score.old
@@ -284,32 +288,26 @@ single.swap = function(initial.set, adjacency, expected){
 }
 
 ######Effect on score when adding or subtracting a layer#######
-layer.change = function(adjacency, expected, layer.set, vertex.set, score.old){
-  
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
+layer.change = function(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n){
   
   indx <- setdiff(1:m, layer.set) #which layers are not in the current set
   score.changes <- rep(0, m)
   
   for(i in 1:m){
     if(i %in% indx){
-      score.changes[i] <- score(adjacency, expected, vertex.set = 
-                                  vertex.set, layer.set = union(layer.set, i)) - score.old
+      score.changes[i] <- score(mod.matrix, vertex.set = 
+                                  vertex.set, layer.set = union(layer.set, i), n) - score.old
     }
     if(i %in% indx == FALSE){
-      score.changes[i] <- score(adjacency, expected, vertex.set = 
-                                  vertex.set, layer.set = setdiff(layer.set, i)) - score.old
+      score.changes[i] <- score(mod.matrix, vertex.set = 
+                                  vertex.set, layer.set = setdiff(layer.set, i), n) - score.old
     }
   }
   return(score.changes)
 }
 
 ######Effect on score when adding or subtracting a vertex#######
-vertex.change = function(adjacency, expected, layer.set, vertex.set, score.old){
-  
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
+vertex.change = function(adjacency, mod.matrix, layer.set, vertex.set, score.old, m, n){
   
   indx <- setdiff(1:n, vertex.set)
   score.changes <- rep(0, n)
@@ -317,12 +315,12 @@ vertex.change = function(adjacency, expected, layer.set, vertex.set, score.old){
   #the following can also be parallelized!
   for(i in 1:n){
     if(i %in% indx){
-      score.changes[i] <- score(adjacency, expected, vertex.set = 
-                                  union(vertex.set, i), layer.set = layer.set) - score.old
+      score.changes[i] <- score(mod.matrix, vertex.set = 
+                                  union(vertex.set, i), layer.set = layer.set, n) - score.old
     }
     if(i %in% indx == FALSE){
-      score.changes[i] <- score(adjacency, expected, vertex.set = 
-                                  setdiff(vertex.set, i), layer.set = layer.set) - score.old
+      score.changes[i] <- score(mod.matrix, vertex.set = 
+                                  setdiff(vertex.set, i), layer.set = layer.set, n) - score.old
     }
   }
   
