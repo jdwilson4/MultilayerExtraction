@@ -1,7 +1,21 @@
-#modularity function
-#for each observed graph in an edgelist, we will calculate the modularity matrix and store it as a list
-#object. Then, we can easily calculate scores from this. Input is an edge list, the output will 
-#be a list of igraph objects
+#' modularity_matrix
+#' 
+#'Function that calculates the modularity matrix for each layer in a multilayer network
+#' @param adjacency: an edgelist. Use adjacency.to.edgelist function to obtain this object
+#' @keywords community detection, multilayer networks, configuration model, random graph models
+#' @return A MultilayerCommunity object, which is a list containing the following objects
+#' \itemize{
+#'      \item mod.matrix: an igraph object representing the modularity matrix for each layer 
+#' }
+#'@references
+#'\itemize{
+#'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 
+#'     extraction in multilayer networks with heterogeneous community structure." Journal of Machine Learning Research
+#' } 
+#' @author James D. Wilson
+#' @export 
+#' 
+#' 
 
 modularity.matrix <- function(adjacency, directed = FALSE){
   m <- max(adjacency[, 3]) #max of the layer index

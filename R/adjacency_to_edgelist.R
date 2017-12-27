@@ -1,5 +1,23 @@
-#Function to convert a list of adjacency matrices to an edgelist
-#requires igraph
+#' adjacency.to.edgelist
+#' 
+#'Function that converts a list of adjacency matrices to an edgelist. 
+#' @param adjacency: a list object whose tth entry is an adjacency matrix representing the tth layer of a multilayer network. 
+#' @param mode: directed or undirected 
+#' @param weighted: currently not functioning. Coming in later version.
+#' @keywords community detection, multilayer networks, configuration model, random graph models
+#' @return A MultilayerCommunity object, which is a list containing the following objects
+#' \itemize{
+#'      \item edgelist: a matrix with three columns representing edge connections- node1, node2, layer 
+#' }
+#'@references
+#'\itemize{
+#'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 
+#'     extraction in multilayer networks with heterogeneous community structure." Journal of Machine Learning Research
+#' } 
+#' @author James D. Wilson
+#' @export 
+#' 
+#' 
 adjacency.to.edgelist <- function(adjacency, mode = c("undirected", "directed"), weighted = NULL){
   if(class(adjacency) != "list"){
     adjacency <- list(adjacency)

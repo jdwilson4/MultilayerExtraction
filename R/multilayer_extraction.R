@@ -18,8 +18,8 @@
 #' }
 #'@references
 #'\itemize{
-#'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
-#'     extraction in multilayer networks with heterogeneous community structure."
+#'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 
+#'     extraction in multilayer networks with heterogeneous community structure." Journal of Machine Learning Research
 #' } 
 #' @author James D. Wilson
 #' @export 
