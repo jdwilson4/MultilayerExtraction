@@ -5,10 +5,8 @@
 #' @param mode: directed or undirected 
 #' @param weighted: currently not functioning. Coming in later version.
 #' @keywords community detection, multilayer networks, configuration model, random graph models
-#' @return A MultilayerCommunity object, which is a list containing the following objects
-#' \itemize{
-#'      \item edgelist: a matrix with three columns representing edge connections- node1, node2, layer 
-#' }
+#' @return edgelist: a matrix with three columns representing edge connections- node1, node2, layer 
+
 #'@references
 #'\itemize{
 #'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 

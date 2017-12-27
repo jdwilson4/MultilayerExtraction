@@ -39,7 +39,7 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   
   mod.matrix <- multilayer.modularity.matrix(adjacency) 
   
-  #Initialize the communities #TODO
+  #Initialize the communities
   print(paste("Initialization Stage"))
   
   for(i in 1:m){

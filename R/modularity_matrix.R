@@ -3,10 +3,7 @@
 #'Function that calculates the modularity matrix for each layer in a multilayer network
 #' @param adjacency: an edgelist. Use adjacency.to.edgelist function to obtain this object
 #' @keywords community detection, multilayer networks, configuration model, random graph models
-#' @return A MultilayerCommunity object, which is a list containing the following objects
-#' \itemize{
-#'      \item mod.matrix: an igraph object representing the modularity matrix for each layer 
-#' }
+#' @return mod.matrix: an igraph object representing the modularity matrix for each layer 
 #'@references
 #'\itemize{
 #'     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 
