@@ -22,6 +22,7 @@ library(MultilayerExtraction, quietly = TRUE)
 ```
 
 ## Install all other dependencies
+```
 install.packages("Matrix")
 install.packages("foreach")
 install.packages("doParallel")
