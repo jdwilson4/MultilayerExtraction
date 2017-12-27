@@ -22,41 +22,34 @@
 #' 
 #' 
 
-score = function(adjacency, expected, vertex.set, layer.set){
+score = function(mod.matrix, vertex.set, layer.set, n){
   
-  #check that input arguments are appropriately defined
-  if(class(adjacency) != "list"){
-    adjacency <- list(adjacency)
-  }
-  
-  if(class(expected) != "list"){
-    expected <- list(expected)
-  }
   if(length(layer.set) < 1 || length(vertex.set) < 1){
     return(obs.score = 0)
   }
   
   if(length(layer.set) == 1){
-    adj.sum <- adjacency[[layer.set]]
-    exp.sum <- expected[[layer.set]]
+    super.mod <- mod.matrix[[layer.set]] #just a single igraph object
   }
   
   if(length(layer.set) > 1){
-    adj.sum <- Reduce('+', adjacency[layer.set])
-    exp.sum <- Reduce('+', expected[layer.set])
+    #merge the modularity graphs
+    super.mod <- graph.empty(n = n, directed = FALSE)
+    for(j in layer.set){
+      super.mod <- union(super.mod, mod.matrix[[j]]) #take union of all networks in the layer.set
+    }
   }
-  
-  D.B <- matrix(adj.sum[vertex.set, vertex.set], ncol = 1)
-  P.vec <- matrix(exp.sum[vertex.set, vertex.set], ncol = 1)
-  
-  
-  #calculate the modularity score and set all negative values to 0
-  modularity.score <- D.B - P.vec
-  modularity.score[which(modularity.score < 0)] <- 0
-  
-  #calculate the score of the community
-  tot.mod <- sum(modularity.score)
-  obs.score <- 2*(tot.mod)^2 / (choose(length(vertex.set), 2)*(length(layer.set)))
-  
-  return(obs.score)
-}
+    #take sub-graph of the modularity matrix
+    super.mod.subgraph <- induced_subgraph(super.mod, v = vertex.set)
+    
+    #get the edge weights all together
+    edge.weights <- as.data.frame(get.edge.attribute(super.mod.subgraph))
+    edge.weights[is.na(edge.weights)] <- 0
+    modularity.score <- rowSums(edge.weights) #sum across vertices first
+    modularity.score[which(modularity.score < 0)] <- 0 #only keep positive values
+    
+    tot.mod <- sum(modularity.score)
+    obs.score <- (tot.mod)^2 / (n^2*choose(length(vertex.set), 2)*(length(layer.set)))
+    
+    return(obs.score)
+  }

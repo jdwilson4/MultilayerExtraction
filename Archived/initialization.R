@@ -23,11 +23,36 @@
 #' @author James D. Wilson
 #' @export 
 
-#take neighborhoods from each layer
-initialization = function(adjacency, prop.sample, m, n){
-  layer.set = replicate(n = ceiling(prop.sample*n), sample(1:m, ceiling(m/2)), simplify = FALSE)
-  neighborhoods <- neighborhood(adjacency, order = 1)
+initialization = function(adjacency, prop.sample){
+  
+  if(class(adjacency) != "list"){
+    adjacency <- list(adjacency)
+  }
+  
+  m <- length(adjacency) #total number of layers
+  n <- dim(adjacency[[1]])[1] #total number of vertices
+  
+  if(m == 1){
+    adj.sum <- adjacency[[1]]
+  }
+  
+  if(m > 1){
+    adj.sum = Reduce("+", adjacency[1:m])
+  }
+  
+  #mean.connection = mean(as.matrix(adj.sum))
+  
+  thresh = function(x, m){
+    #random choice of layer set
+    layer.set = sample(1:m, ceiling(m/2))
+    median.connection <- median(x) #mean connection of the given vertex
+    #vertex set is for those with higher than median connection
+    vertex.set <- which(x > median.connection)
+    return(list(vertex.set = vertex.set, layer.set = layer.set))
+  }
+  
+  neighborhoods <- apply(adj.sum, 1, thresh, m)
   keep.sample <- sample(1:n, ceiling(prop.sample*n)) #keep a random sample of the neighborhoods
   neighborhoods <- neighborhoods[keep.sample]
-  return(list(vertex.set = neighborhoods, layer.set = layer.set))
+  return(neighborhoods)
 }

@@ -16,21 +16,18 @@
 #' @author James D. Wilson
 #' @export 
 
-expected.CM <- function(adjacency, directed = FALSE){
+expected.CM <- function(adjacency){
   #check that adjacency is a list object
-  m <- max(adjacency[, 3]) #max of the layer index
-  n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
-  
+  if(class(adjacency) != "list"){
+    adjacency <- list(adjacency)
+  }
+  m <- length(adjacency) #number of layers
   P <- list()
   for(i in 1:m){
-    #may have to make sure that the appropriate number of nodes are specified
-    graph <- graph_from_edgelist(as.matrix(subset(as.data.frame(adjacency), layer == i))[, 1:2], 
-                                 directed = directed)
-    degrees <- degree(graph)
+    degrees <- matrix(rowSums(as.matrix(adjacency[[i]])), ncol = 1)
     d.tot <- sum(degrees)
-    expected <- degrees%*%t(degrees) / d.tot #expected adjacency matrix under configuration model
-    #save the expected value as a weighted igraph object
-    P[[i]] <- graph_from_adjacency_matrix(expected, mode = "undirected", weighted = TRUE)
-  }                                       
+    expected <- degrees%*%t(degrees) / d.tot #expected under configuration model
+    P[[i]] <- expected
+  }
   return(P)
 }
