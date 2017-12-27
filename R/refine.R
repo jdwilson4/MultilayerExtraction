@@ -54,7 +54,12 @@ refine = function(Multilayer.object, k, m, n){
 ###cleanup function
 cleanup = function(Results, beta){
   k = length(Results)
-  if(k < 2){return(Results)}
+  if(k < 2){
+    Results <- Results[[1]]
+    Results$Mean.Score <- Results$Score
+    Results$Number.Communities <- 1
+    return(Results)
+    }
   indx.rm = numeric()
   if(k > 1){
     for(i in 1:(k-1)){

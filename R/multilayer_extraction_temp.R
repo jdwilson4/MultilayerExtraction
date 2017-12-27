@@ -25,7 +25,7 @@
 #' @export 
 #' 
 #' 
-multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.sample = 0.05){
+multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.sample = 0.05, directed = c(FALSE, TRUE)){
   #adjacency should be an edgelist with three columns - node1, node2, layer
   #layer should be numbered with integers
   #each network has the same number of nodes
@@ -33,7 +33,7 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   
   m <- max(adjacency[, 3]) #max of the layer index
   n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
-  
+  directed <- directed[1]
   #Calculate the modularity matrix
   print(paste("Estimation Stage"))
   
@@ -68,7 +68,8 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
     starter <- list()
     starter$vertex.set <- as.numeric(initial.set$vertex.set[[i]])
     starter$layer.set <- as.numeric(initial.set$layer.set[[i]])
-    single.swap(starter, adjacency, mod.matrix, m, n)} 
+    single.swap(starter, adjacency, mod.matrix, m, n)
+    } 
   
   #Cleanup the results: Keep the unique communities
   print(paste("Cleaning Stage"))
@@ -84,7 +85,7 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
     }
   }
   
-  Scores = round(Scores, 2)
+  Scores = round(Scores, 5)
   #keep only unique communities with score greater than threshold
   indx = which(!duplicated(Scores) == TRUE)
   indx.2 = which(Scores > min.score)
@@ -96,8 +97,8 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   if(length(Results2) > 0){
     betas = seq(0.01, 1, by = 0.01)
     Results3 = list()
-    Number.Communities = rep(0,length(betas))
-    Mean.Score = rep(0,length(betas))
+    Number.Communities = rep(0, length(betas))
+    Mean.Score = rep(0, length(betas))
     for(i in 1:length(betas)){
       temp = cleanup(Results2, betas[i])
       Results3[[i]] = list(Beta = betas[i], Communities = temp$Communities)

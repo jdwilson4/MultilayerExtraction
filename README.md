@@ -25,7 +25,9 @@ library(MultilayerExtraction, quietly = TRUE)
 install.packages("foreach")
 install.packages("doParallel")
 install.packages("parallel")
+install.packages("igraph")
 
+library(igraph, quietly = TRUE)
 library(foreach, quietly = TRUE)  
 library(doParallel, quietly = TRUE) 
 library(parallel, quietly = TRUE)  
@@ -78,7 +80,11 @@ Notably, this network has heterogeneous connectivity as witnessed above. The Mul
 We now run the extraction algorithm.
 ```
 ##run Multilayer Extraction algorithm on this network
-community.object <- multilayer.extraction(adjacency = AU_CS, seed = 123, min.score = 0, prop.sample = 1.00)
+
+##convert the list of adjacency matrices to an edgelist
+network <- adjacency.to.edgelist(AU_CS)
+
+community.object <- multilayer.extraction(adjacency = network, seed = 123, min.score = 0, prop.sample = .10)
 
 #plot the number of communities across overlap parameter beta
 plot(community.object, main = "Diagnostic Plot AU_CS")

@@ -45,7 +45,7 @@ score = function(mod.matrix, vertex.set, layer.set, n){
     #get the edge weights all together
     edge.weights <- as.data.frame(get.edge.attribute(super.mod.subgraph))
     edge.weights[is.na(edge.weights)] <- 0
-    modularity.score <- colSums(edge.weights) #sum across vertices first
+    modularity.score <- rowSums(edge.weights) #sum across vertices first
     modularity.score[which(modularity.score < 0)] <- 0 #only keep positive values
     
     tot.mod <- sum(modularity.score)
