@@ -36,7 +36,7 @@ score = function(mod.matrix, vertex.set, layer.set, n){
     #merge the modularity graphs
     super.mod <- graph.empty(n = n, directed = FALSE)
     for(j in layer.set){
-      super.mod <- union(super.mod, mod.matrix[[j]]) #take union of all networks in the layer.set
+      super.mod <- igraph::union(super.mod, mod.matrix[[j]]) #take union of all networks in the layer.set
     }
   }
     #take sub-graph of the modularity matrix
