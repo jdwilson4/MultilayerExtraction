@@ -19,14 +19,16 @@ library(devtools, quietly = TRUE)
 devtools::install_github('jdwilson4/multilayer_extraction')
 
 library(MultilayerExtraction, quietly = TRUE)
+```
 
-
-#install all other required libraries
+## Install all other dependencies
+install.packages("Matrix")
 install.packages("foreach")
 install.packages("doParallel")
 install.packages("parallel")
 install.packages("igraph")
 
+library(Matrix, quietly = TRUE)
 library(igraph, quietly = TRUE)
 library(foreach, quietly = TRUE)  
 library(doParallel, quietly = TRUE) 
