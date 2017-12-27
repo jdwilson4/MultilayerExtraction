@@ -4,7 +4,7 @@
 \alias{expected.CM}
 \title{expected.CM}
 \usage{
-expected.CM(adjacency)
+expected.CM(adjacency, directed = FALSE)
 }
 \arguments{
 \item{adjacency:}{a list object whose tth entry is an adjacency matrix representing the tth layer of a multilayer network.}
@@ -17,14 +17,14 @@ expected.CM(adjacency)
 \description{
 Function that calculates the expected edge weight between each pair of nodes in each layer of a multilayer network.
 }
-\author{
-James D. Wilson
-}
 \references{
 \itemize{
     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
     extraction in multilayer networks with heterogeneous community structure."
 }
+}
+\author{
+James D. Wilson
 }
 \keyword{community}
 \keyword{configuration}
@@ -35,4 +35,3 @@ James D. Wilson
 \keyword{multilayer}
 \keyword{networks,}
 \keyword{random}
-

@@ -5,7 +5,7 @@
 \title{multilayer.extraction}
 \usage{
 multilayer.extraction(adjacency, seed = 123, min.score = 0,
-  prop.sample = 0.05)
+  prop.sample = 0.05, directed = c(FALSE, TRUE))
 }
 \arguments{
 \item{adjacency:}{a list object whose tth entry is an adjacency matrix representing the tth layer of a multilayer network.}
@@ -31,14 +31,14 @@ A MultilayerCommunity object, which is a list containing the following objects
 \description{
 Function that identifies statistically significant vertex-layer communities in multilayer networks.
 }
-\author{
-James D. Wilson
-}
 \references{
 \itemize{
-    \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
-    extraction in multilayer networks with heterogeneous community structure."
+    \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2017) "Significance based 
+    extraction in multilayer networks with heterogeneous community structure." Journal of Machine Learning Research
 }
+}
+\author{
+James D. Wilson
 }
 \keyword{community}
 \keyword{configuration}
@@ -49,4 +49,3 @@ James D. Wilson
 \keyword{multilayer}
 \keyword{networks,}
 \keyword{random}
-

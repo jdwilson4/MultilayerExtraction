@@ -4,7 +4,7 @@
 \alias{score}
 \title{score}
 \usage{
-score(adjacency, expected, vertex.set, layer.set)
+score(mod.matrix, vertex.set, layer.set, n)
 }
 \arguments{
 \item{adjacency:}{a list object whose tth entry is an adjacency matrix representing the tth layer of a multilayer network.}
@@ -24,14 +24,14 @@ expected.CM function in this package.}
 \description{
 Function that calculates the score of a multilayer vertex - layer community
 }
-\author{
-James D. Wilson
-}
 \references{
 \itemize{
     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
     extraction in multilayer networks with heterogeneous community structure."
 }
+}
+\author{
+James D. Wilson
 }
 \keyword{community}
 \keyword{configuration}
@@ -42,4 +42,3 @@ James D. Wilson
 \keyword{multilayer}
 \keyword{networks,}
 \keyword{random}
-

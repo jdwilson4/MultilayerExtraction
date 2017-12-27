@@ -26,14 +26,14 @@ A list that contains the following objects
 \description{
 Function that identifies statistically significant vertex-layer communities in multilayer networks.
 }
-\author{
-James D. Wilson
-}
 \references{
 \itemize{
     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
     extraction in multilayer networks with heterogeneous community structure."
 }
+}
+\author{
+James D. Wilson
 }
 \keyword{community}
 \keyword{configuration}
@@ -44,4 +44,3 @@ James D. Wilson
 \keyword{multilayer}
 \keyword{networks,}
 \keyword{random}
-

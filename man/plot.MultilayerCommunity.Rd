@@ -21,14 +21,14 @@ Function plots the average score and total number of communities extracted acros
 This is a useful diagnostic plot to determine how many communities were extracted in the observed multilayer network. At beta = 0,
 all of the communities are disjoint. As beta increases, the communities are allowed to overlap more. See the below reference for more details about this function.
 }
-\author{
-James D. Wilson
-}
 \references{
 \itemize{
     \item Wilson, James D., Palowitch, John, Bhamidi, Shankar, and Nobel, Andrew B. (2016) "Significance based 
     extraction in multilayer networks with heterogeneous community structure."
 }
+}
+\author{
+James D. Wilson
 }
 \keyword{community}
 \keyword{configuration}
@@ -39,4 +39,3 @@ James D. Wilson
 \keyword{multilayer}
 \keyword{networks,}
 \keyword{random}
-
