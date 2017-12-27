@@ -15,10 +15,7 @@ adjacency.to.edgelist(adjacency, mode = c("undirected", "directed"),
 \item{weighted:}{currently not functioning. Coming in later version.}
 }
 \value{
-A MultilayerCommunity object, which is a list containing the following objects
-\itemize{
-     \item edgelist: a matrix with three columns representing edge connections- node1, node2, layer 
-}
+edgelist: a matrix with three columns representing edge connections- node1, node2, layer
 }
 \description{
 Function that converts a list of adjacency matrices to an edgelist.

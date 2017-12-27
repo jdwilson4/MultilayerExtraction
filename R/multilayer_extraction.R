@@ -67,6 +67,10 @@ multilayer.extraction = function(adjacency, seed = 123, min.score = 0, prop.samp
   Results.temp <- foreach(i=1:K,.packages="MultilayerExtraction") %dopar% {
     starter <- list()
     starter$vertex.set <- as.numeric(initial.set$vertex.set[[i]])
+    #if the initial neighborhood is of length 1, add a random vertex
+    if(length(starter$vertex.set < 2)){
+      starter$vertex.set <- c(starter$vertex.set, setdiff(n, starter$vertex.set)[1])
+    }
     starter$layer.set <- as.numeric(initial.set$layer.set[[i]])
     single.swap(starter, adjacency, mod.matrix, m, n)
     } 

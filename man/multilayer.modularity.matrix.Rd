@@ -10,10 +10,7 @@ multilayer.modularity.matrix(adjacency, directed = FALSE)
 \item{adjacency:}{an edgelist. Use adjacency.to.edgelist function to obtain this object}
 }
 \value{
-A MultilayerCommunity object, which is a list containing the following objects
-\itemize{
-     \item mod.matrix: an igraph object representing the modularity matrix for each layer 
-}
+mod.matrix: an igraph object representing the modularity matrix for each layer
 }
 \description{
 Function that calculates the modularity matrix for each layer in a multilayer network
