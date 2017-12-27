@@ -2,7 +2,7 @@
 % Please edit documentation in R/modularity_matrix.R
 \name{modularity.matrix}
 \alias{modularity.matrix}
-\title{modularity_matrix}
+\title{modularity.matrix}
 \usage{
 \method{modularity}{matrix}(adjacency, directed = FALSE)
 }

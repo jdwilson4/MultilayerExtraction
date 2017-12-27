@@ -1,4 +1,4 @@
-#' modularity_matrix
+#' modularity.matrix
 #' 
 #'Function that calculates the modularity matrix for each layer in a multilayer network
 #' @param adjacency: an edgelist. Use adjacency.to.edgelist function to obtain this object
