@@ -1,4 +1,4 @@
-#' modularity.matrix
+#' multilayer.modularity.matrix
 #' 
 #'Function that calculates the modularity matrix for each layer in a multilayer network
 #' @param adjacency: an edgelist. Use adjacency.to.edgelist function to obtain this object
@@ -17,7 +17,7 @@
 #' 
 #' 
 
-modularity.matrix <- function(adjacency, directed = FALSE){
+multilayer.modularity.matrix <- function(adjacency, directed = FALSE){
   m <- max(adjacency[, 3]) #max of the layer index
   n <- length(unique(c(adjacency[, 1], adjacency[, 2])))
   mod.matrix <- list()
