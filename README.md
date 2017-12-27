@@ -86,14 +86,19 @@ We now run the extraction algorithm.
 
 ##convert the list of adjacency matrices to an edgelist
 network <- adjacency.to.edgelist(AU_CS)
-
+set.seed(123)
+start_time <- Sys.time()_
 community.object <- multilayer.extraction(adjacency = network, seed = 123, min.score = 0, prop.sample = .10)
+end_time <- Sys.time()
+
+end_time - start_time
+#for me, this took 1.055319 mins
 
 #plot the number of communities across overlap parameter beta
 plot(community.object, main = "Diagnostic Plot AU_CS")
 object <- refine(community.object, k = 6, m = m, n = n)
 
-##there are 6 small communities. Let's look at the size of each
+##there are 7 small communities. Let's look at the size of each
 num.layers <- colSums(object$Layers > 0)
 num.vertices <- colSums(object$Vertices)
 
