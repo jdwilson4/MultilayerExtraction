@@ -87,7 +87,7 @@ We now run the extraction algorithm.
 ##convert the list of adjacency matrices to an edgelist
 network <- adjacency.to.edgelist(AU_CS)
 set.seed(123)
-start_time <- Sys.time()_
+start_time <- Sys.time()
 community.object <- multilayer.extraction(adjacency = network, seed = 123, min.score = 0, prop.sample = .10)
 end_time <- Sys.time()
 
