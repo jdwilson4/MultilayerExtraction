@@ -5,8 +5,10 @@ Author: James D. Wilson [aut, cre]
 Maintainer: James D. Wilson <jdwilson4@usfca.edu>
 Description: An R package to identify and describe strongly connected vertex-layer communities in multilayer networks. 
 Depends:
-    R (>= 3.2.2)
+    R (>= 3.2.2), igraph, foreach, doParallel
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 6.0.1
+Suggests: 
+    testthat
